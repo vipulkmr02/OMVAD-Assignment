@@ -9,7 +9,7 @@ import icon from './assets/icon.png'
 
 function Home() {
   return <div className="h-screen flex flex-col items-center gap-5">
-    <img src={icon} className='w-56 rounded-lg my-10' alt="Icon" />
+    <img src={icon} className='size-40 rounded-lg my-5' alt="Icon" />
     <h1 className="text-4xl font-bold">
       Link Saver + Summary Generator
     </h1>

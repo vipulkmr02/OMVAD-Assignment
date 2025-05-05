@@ -49,3 +49,5 @@ createRoot(document.getElementById('root')!).render(
     <RouterProvider router={router} />
   </StrictMode>,
 )
+
+console.log("Api URL: ", import.meta.env.API_URL)
