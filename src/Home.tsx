@@ -4,6 +4,7 @@
 // TODO: Add two buttons for Login & Sign Up
 
 
+import { Link } from 'react-router-dom'
 import icon from './assets/icon.png'
 
 function Home() {
@@ -19,12 +20,12 @@ function Home() {
       non molestiae!
     </h4>
     <div className="flex gap-4">
-      <a href="/login" className="bg-blue-500 text-white px-4 py-2 rounded-lg">
+      <Link to="/login" className="bg-blue-500 text-white px-4 py-2 rounded-lg">
         Login
-      </a>
-      <a href="/signup" className="bg-green-500 text-white px-4 py-2 rounded-lg">
+      </Link>
+      <Link to="/signup" className="bg-green-500 text-white px-4 py-2 rounded-lg">
         Sign Up
-      </a>
+      </Link>
     </div>
   </div>
 }

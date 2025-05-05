@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter } from 'react-router-dom'
 import './index.css'
-import { Outlet, RouterProvider } from 'react-router'
+import { Link, Outlet, RouterProvider } from 'react-router'
 import Home from './Home'
 import AuthPage from './Auth'
 import { Toaster, ToasterProps } from 'react-hot-toast'
@@ -22,9 +22,7 @@ const router = createBrowserRouter([
         <div className="text-5xl font-bold text-red-600">
           Lost your way
         </div>
-        <a href="/" className="text-blue-500 text-2xl">
-          Go home
-        </a>
+        <Link to="/" className="text-blue-500 text-2xl"> Go home </Link>
       </div>,
     element: <>
       <Outlet />
