@@ -2,11 +2,12 @@ import { createContext, StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter } from 'react-router-dom'
 import './index.css'
-import { Link, Outlet, RouterProvider } from 'react-router'
+import { Link, Outlet, redirect, RouterProvider, } from 'react-router'
 import Home from './Home'
-import AuthPage from './Auth'
+import { LoginPage, RegisterPage } from './Auth'
 import { Toaster, ToasterProps } from 'react-hot-toast'
 import { Dashboard } from './Dashboard'
+import { logout } from './requests'
 
 const toastProps: ToasterProps = {
   position: "top-right",
@@ -14,6 +15,7 @@ const toastProps: ToasterProps = {
 
 export interface AppContext {
   key: string | null
+  email: string | null
 }
 
 
@@ -33,24 +35,30 @@ const router = createBrowserRouter([
         <Link to="/" className="text-blue-500 text-2xl"> Go home </Link>
       </div>,
     element: <>
-      <context.Provider value={{ key: null }}>
+      <context.Provider value={{} as AppContext}>
         <Outlet />
         <Toaster {...toastProps} />
       </context.Provider>
     </>,
-    loader: () => { },
     children: [
       {
         element: <Home />,
         path: "/"
       },
       {
-        element: <AuthPage active='signup' />,
+        element: <RegisterPage />,
         path: "/signup"
       },
       {
-        element: <AuthPage active='login' />,
+        element: <LoginPage />,
         path: "/login"
+      },
+      {
+        path: "/logout",
+        loader: () => {
+          redirect('/');
+          logout();
+        }
       },
       {
         element: <Dashboard />,
@@ -63,6 +71,6 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <RouterProvider router={router} />
-  </StrictMode>,
+  </StrictMode>
 )
 

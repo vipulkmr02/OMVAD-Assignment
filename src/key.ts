@@ -5,3 +5,4 @@ export const saveKey = (key: string) => {
 export const getKey = () => {
   return localStorage.getItem('key')
 }
+
