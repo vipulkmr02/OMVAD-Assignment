@@ -1,9 +1,11 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { FormInput } from "./components";
 import icon from '/src/assets/icon.png'
 import { login, signup } from "./requests";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { context } from "./main";
+import { saveKey } from "./key";
 
 function AuthPage(props: { active?: 'login' | 'signup' }) {
   const navigate = useNavigate();
@@ -11,20 +13,54 @@ function AuthPage(props: { active?: 'login' | 'signup' }) {
   const [active] = useState(props.active);
   const formRef = useRef<HTMLFormElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const cnt = useContext(context);
+
   const submit = () => {
     buttonRef.current!.setAttribute('disabled', '');
     let promise: Promise<Response>;
-    if (active === 'login') promise = login(new FormData(formRef.current!))
-    else promise = signup(new FormData(formRef.current!));
+
+    if (active === 'login') {
+      const fd = new FormData(formRef.current!)
+      promise = login({
+        email: fd.get("email")!.toString(),
+        password: fd.get("password")!.toString()
+      })
+
+      promise.then(res => res.json()).then(
+        json => {
+          cnt.key = json.key
+          saveKey(json.key)
+        }
+      ).then(() => navigate('/dashboard'))
+    } else {
+      const fd = new FormData(formRef.current!);
+      fd.delete('c-password')
+      const body = {
+        email: fd.get('email')!.toString(),
+        name: fd.get('name')!.toString(),
+        password: fd.get('name')!.toString()
+      }
+      promise = signup(body);
+    }
+    promise.then(
+      res => {
+        if (res.status === 201)
+          return res.json()
+        else {
+          throw res.json()
+        }
+      }
+    ).then((json) => {
+      toast.success(json.message)
+      toast('Now, Login Please')
+      navigate('/login');
+    }).catch(json => {
+      toast.error(json.message)
+    })
+
     toast.promise(promise, {
       loading: "Hang in There",
-    })
-    promise.then(res => {
-      if (res.ok) {
-        toast.success(`Welcome${active === 'login' ? ' back' : ', New User'}`)
-        return navigate('/');
-      }
-      else toast.error("Login Failed!")
     })
   }
 
@@ -53,13 +89,13 @@ function AuthPage(props: { active?: 'login' | 'signup' }) {
         <form ref={formRef} className="flex flex-col gap-4 w-96">
           <FormInput
             type="text"
-            name="Name"
+            name="name"
             placeholder="Name"
             id="name-ip"
           />
           <FormInput
             type="email"
-            name="Email"
+            name="email"
             placeholder="Email"
             id="email-ip"
           />

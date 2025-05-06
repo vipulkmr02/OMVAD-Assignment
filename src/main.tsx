@@ -1,4 +1,4 @@
-import { StrictMode } from 'react'
+import { createContext, StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter } from 'react-router-dom'
 import './index.css'
@@ -6,10 +6,18 @@ import { Link, Outlet, RouterProvider } from 'react-router'
 import Home from './Home'
 import AuthPage from './Auth'
 import { Toaster, ToasterProps } from 'react-hot-toast'
+import { Dashboard } from './Dashboard'
 
 const toastProps: ToasterProps = {
   position: "top-right",
 }
+
+export interface AppContext {
+  key: string | null
+}
+
+
+export const context = createContext({} as AppContext);
 
 const router = createBrowserRouter([
   {
@@ -25,9 +33,12 @@ const router = createBrowserRouter([
         <Link to="/" className="text-blue-500 text-2xl"> Go home </Link>
       </div>,
     element: <>
-      <Outlet />
-      <Toaster {...toastProps} />
+      <context.Provider value={{ key: null }}>
+        <Outlet />
+        <Toaster {...toastProps} />
+      </context.Provider>
     </>,
+    loader: () => { },
     children: [
       {
         element: <Home />,
@@ -40,7 +51,12 @@ const router = createBrowserRouter([
       {
         element: <AuthPage active='login' />,
         path: "/login"
-      }]
+      },
+      {
+        element: <Dashboard />,
+        path: "/dashboard"
+      }
+    ]
   }
 ])
 
@@ -50,4 +66,3 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>,
 )
 
-console.log("Api URL: ", import.meta.env.API_URL)
